@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
-import { Save, Plus, Eye, Shield, Globe, Clock, CheckCircle, Settings, ArrowLeftRight } from 'lucide-react';
+import { Save, Plus, Eye, Shield, Globe, Clock, CheckCircle, Settings, ArrowLeftRight, Upload, Copy } from 'lucide-react';
 
 interface Settings {
   reminderInterval: number;
@@ -127,7 +127,6 @@ function OptionsApp() {
   const moveBetweenLists = (domain: string, from: 'blocklist'|'allowlist') => {
     if (!settings) return;
     const to = from === 'blocklist' ? 'allowlist' : 'blocklist';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const next = { ...settings } as any;
     next[from] = next[from].filter((d: string) => d !== domain);
     next[to] = Array.from(new Set([...(next[to] as string[]), domain]));
@@ -209,45 +208,46 @@ function OptionsApp() {
     }
     setSettings(next);
     setImportText('');
+    setImportOpen(false);
   };
 
   if (!settings) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-3 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 font-medium">Loading settings...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-3 border-purple-200 dark:border-purple-700 border-t-purple-600 mx-auto mb-4"></div>
+          <p className="text-slate-600 dark:text-slate-300 font-medium">Loading settings...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 dark:bg-slate-900 dark:text-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:text-slate-100">
       <div className="max-w-5xl mx-auto py-8 px-6">
         {/* Header */}
-        <div className="bg-white dark:bg-slate-800 dark:border-slate-700 rounded-2xl shadow-lg border border-slate-200/50 p-8 mb-8 backdrop-blur-sm">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700 p-8 mb-8 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
               <div className="flex items-center space-x-4 mb-2">
-                <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg">
+                <div className="p-3 bg-gradient-to-br from-purple-600 to-indigo-700 dark:from-purple-500 dark:to-indigo-600 rounded-xl shadow-lg">
                   <Eye className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-slate-800 tracking-tight">EyeCare Focus</h1>
-                  <p className="text-slate-600 font-medium">Extension Settings</p>
+                  <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-200 tracking-tight">EyeCare Focus</h1>
+                  <p className="text-slate-600 dark:text-slate-400 font-medium">Extension Settings</p>
                 </div>
               </div>
-              <p className="text-slate-500 leading-relaxed">Configure your eye care reminders, focus sessions, and website blocking preferences</p>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">Configure your eye care reminders, focus sessions, and website blocking preferences</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-slate-100 rounded-xl">
-                <Settings className="h-6 w-6 text-slate-600" />
+              <div className="p-3 bg-slate-100 dark:bg-slate-700 rounded-xl">
+                <Settings className="h-6 w-6 text-slate-600 dark:text-slate-400" />
               </div>
               <select
                 value={(settings as any).theme || 'system'}
                 onChange={(e) => setSettings({ ...settings!, theme: e.target.value as any })}
-                className="px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold bg-white"
+                className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"
                 title="Theme"
               >
                 <option value="system">System</option>
@@ -258,29 +258,29 @@ function OptionsApp() {
           </div>
           
           {saved && (
-            <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center space-x-2 shadow-sm">
-              <CheckCircle className="h-4 w-4 text-emerald-600" />
+            <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 border border-emerald-200 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 px-4 py-3 rounded-xl flex items-center space-x-2 shadow-sm">
+              <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               <span className="font-semibold">Settings saved successfully!</span>
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Eye Care Settings */}
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 p-6 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700 p-6 backdrop-blur-sm">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2.5 bg-blue-600 rounded-xl">
+              <div className="p-2.5 bg-purple-600 dark:bg-purple-500 rounded-xl">
                 <Clock className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-slate-800">Eye Care Reminders</h2>
-                <p className="text-sm text-slate-500">20-20-20 rule notifications</p>
+                <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">Eye Care Reminders</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">20-20-20 rule notifications</p>
               </div>
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-3">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
                   Reminder Interval (minutes)
                 </label>
                 <input
@@ -292,17 +292,17 @@ function OptionsApp() {
                     ...settings,
                     reminderInterval: parseInt(e.target.value) || 20
                   })}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium bg-slate-50 focus:bg-white"
+                  className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 font-medium bg-slate-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-600 text-slate-800 dark:text-slate-200"
                 />
-                <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
                   Recommended: 20 minutes (follows the 20-20-20 rule for eye health)
                 </p>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
                 <div>
-                  <label className="text-sm font-bold text-slate-700">Enable Tracking</label>
-                  <p className="text-xs text-slate-500 mt-0.5">Monitor focus time and website usage</p>
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Enable Tracking</label>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Monitor focus time and website usage</p>
                 </div>
                 <button
                   onClick={() => setSettings({
@@ -310,7 +310,7 @@ function OptionsApp() {
                     trackingEnabled: !settings.trackingEnabled
                   })}
                   className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-200 ${
-                    settings.trackingEnabled ? 'bg-blue-600 shadow-lg' : 'bg-slate-300'
+                    settings.trackingEnabled ? 'bg-purple-600 shadow-lg shadow-purple-600/25' : 'bg-slate-300 dark:bg-slate-600'
                   }`}
                 >
                   <span
@@ -321,10 +321,10 @@ function OptionsApp() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
                 <div>
-                  <label className="text-sm font-bold text-slate-700">Sound Notifications</label>
-                  <p className="text-xs text-slate-500 mt-0.5">Play audio with eye care reminders</p>
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Sound Notifications</label>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Play audio with eye care reminders</p>
                 </div>
                 <button
                   onClick={() => setSettings({
@@ -332,7 +332,7 @@ function OptionsApp() {
                     soundEnabled: !settings.soundEnabled
                   })}
                   className={`relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-200 ${
-                    settings.soundEnabled ? 'bg-blue-600 shadow-lg' : 'bg-slate-300'
+                    settings.soundEnabled ? 'bg-purple-600 shadow-lg shadow-purple-600/25' : 'bg-slate-300 dark:bg-slate-600'
                   }`}
                 >
                   <span
@@ -346,20 +346,20 @@ function OptionsApp() {
           </div>
 
           {/* Focus Mode Settings */}
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 p-6 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700 p-6 backdrop-blur-sm">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="p-2.5 bg-violet-600 rounded-xl">
+              <div className="p-2.5 bg-violet-600 dark:bg-violet-500 rounded-xl">
                 <Shield className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-slate-800">Focus Mode</h2>
-                <p className="text-sm text-slate-500">Website blocking preferences</p>
+                <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">Focus Mode</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Website blocking preferences</p>
               </div>
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-3">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
                   Default Focus Duration (minutes)
                 </label>
                 <input
@@ -371,16 +371,16 @@ function OptionsApp() {
                     ...settings,
                     focusDuration: parseInt(e.target.value) || 25
                   })}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-200 font-medium bg-slate-50 focus:bg-white"
+                  className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-200 font-medium bg-slate-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-600 text-slate-800 dark:text-slate-200"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-3">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
                   Blocking Mode
                 </label>
                 <div className="space-y-3">
-                  <label className="flex items-center p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors duration-200">
+                  <label className="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200">
                     <input
                       type="radio"
                       checked={!settings.useAllowlistMode}
@@ -391,11 +391,11 @@ function OptionsApp() {
                       className="mr-3 text-violet-600 w-4 h-4"
                     />
                     <div>
-                      <span className="text-sm font-semibold text-slate-800">Blocklist Mode</span>
-                      <p className="text-xs text-slate-500 mt-0.5">Block only specific distracting sites</p>
+                      <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">Blocklist Mode</span>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Block only specific distracting sites</p>
                     </div>
                   </label>
-                  <label className="flex items-center p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors duration-200">
+                  <label className="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200">
                     <input
                       type="radio"
                       checked={settings.useAllowlistMode}
@@ -406,8 +406,8 @@ function OptionsApp() {
                       className="mr-3 text-violet-600 w-4 h-4"
                     />
                     <div>
-                      <span className="text-sm font-semibold text-slate-800">Allowlist Mode</span>
-                      <p className="text-xs text-slate-500 mt-0.5">Allow only specific work/study sites</p>
+                      <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">Allowlist Mode</span>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Allow only specific work/study sites</p>
                     </div>
                   </label>
                 </div>
@@ -416,196 +416,339 @@ function OptionsApp() {
           </div>
         </div>
 
-        {/* Blocklist Management */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/50 p-6 backdrop-blur-sm">
+        {/* Website Lists Management */}
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700 p-6 backdrop-blur-sm mb-8">
           <div className="flex items-center space-x-3 mb-6">
-            <div className={`p-2.5 rounded-xl ${settings.useAllowlistMode ? 'bg-emerald-600' : 'bg-red-600'}`}>
+            <div className={`p-2.5 rounded-xl ${settings.useAllowlistMode ? 'bg-emerald-600' : 'bg-rose-600'}`}>
               <Globe className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800">
-                {settings.useAllowlistMode ? 'Allowed Sites' : 'Blocked Sites'}
+              <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">
+                Website Lists Management
               </h2>
-              <p className="text-sm text-slate-500">
-                {settings.useAllowlistMode ? 'Sites you can access during focus mode' : 'Sites blocked during focus mode'}
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Manage your blocked and allowed domains
               </p>
             </div>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Blocklist */}
-            {!settings.useAllowlistMode && (
-              <div>
-                <h3 className="text-sm font-bold text-slate-700 mb-4 flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <span>Blocked Domains</span>
-                </h3>
-                
-                <div className="flex space-x-2 mb-4">
-                  <input
-                    type="text"
-                    placeholder="instagram.com"
-                    value={newBlocklistItem}
-                    onChange={(e) => { setNewBlocklistItem(e.target.value); setBlockError(''); }}
-                    onKeyPress={(e) => e.key === 'Enter' && addToBlocklist()}
-                    className="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm font-medium bg-slate-50 focus:bg-white transition-all duration-200"
-                  />
-                  <button
-                    onClick={addToBlocklist}
-                    className="px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {blockError && <div className="text-xs text-rose-600 mb-2">{blockError}</div>}
-                <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
-                  {settings.blocklist.map((domain) => (
-                    <div key={domain} className="bg-red-50 hover:bg-red-100 px-4 py-3 rounded-xl border border-red-200 transition-colors duration-200">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-red-800 flex-1 truncate">{domain}</span>
-                        <button onClick={() => editNote(domain)} className="px-2 py-1 rounded-lg bg-amber-500 text-white text-[11px] hover:bg-amber-600">Note</button>
-                        <button onClick={() => moveBetweenLists(domain, 'blocklist')} className="px-2 py-1 rounded-lg bg-indigo-600 text-white text-[11px] hover:bg-indigo-700 inline-flex items-center gap-1"><ArrowLeftRight className="h-3.5 w-3.5" />Move</button>
-                        <button onClick={() => removeFromBlocklist(domain)} className="px-2 py-1 rounded-lg bg-rose-600 text-white text-[11px] hover:bg-rose-700">Remove</button>
-                      </div>
-                      {noteEditingFor === domain ? (
-                        <div className="mt-2 flex items-center gap-2">
-                          <input value={noteValue} onChange={(e) => setNoteValue(e.target.value)} className="flex-1 px-2 py-1 rounded-lg border border-slate-300 text-xs" placeholder="Why blocked?" />
-                          <button onClick={() => saveNote(domain)} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700">Save</button>
-                          <button onClick={() => setNoteEditingFor(null)} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">Cancel</button>
-                          <button onClick={() => deleteNote(domain)} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-700">Delete</button>
-                        </div>
-                      ) : settings.notes?.[domain] ? (
-                        <div className="mt-1 text-[11px] text-red-700/90">{settings.notes[domain]}</div>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-4 flex items-center space-x-2">
+                <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
+                <span>Blocked Domains ({settings.blocklist.length})</span>
+              </h3>
+              
+              <div className="flex space-x-2 mb-4">
+                <input
+                  type="text"
+                  placeholder="instagram.com"
+                  value={newBlocklistItem}
+                  onChange={(e) => { setNewBlocklistItem(e.target.value); setBlockError(''); }}
+                  onKeyPress={(e) => e.key === 'Enter' && addToBlocklist()}
+                  className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm font-medium bg-slate-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-600 text-slate-800 dark:text-slate-200 transition-all duration-200"
+                />
+                <button
+                  onClick={addToBlocklist}
+                  className="px-4 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
               </div>
-            )}
+
+              {blockError && <div className="text-xs text-rose-600 dark:text-rose-400 mb-2">{blockError}</div>}
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+                {settings.blocklist.map((domain) => (
+                  <div key={domain} className="bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/30 px-4 py-3 rounded-xl border border-rose-200 dark:border-rose-800 transition-colors duration-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-rose-800 dark:text-rose-200 flex-1 truncate">{domain}</span>
+                      {settings.notes?.[domain] && (
+                        <div className="w-2 h-2 rounded-full bg-amber-400" title="Has note"></div>
+                      )}
+                      <div className="flex gap-1">
+                        <button 
+                          onClick={() => editNote(domain)} 
+                          className="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium transition-colors"
+                          title="Add/edit note"
+                        >
+                          📝
+                        </button>
+                        <button 
+                          onClick={() => moveBetweenLists(domain, 'blocklist')} 
+                          className="px-2 py-1 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium transition-colors inline-flex items-center gap-1"
+                          title="Move to allowlist"
+                        >
+                          <ArrowLeftRight className="h-3 w-3" />
+                        </button>
+                        <button 
+                          onClick={() => removeFromBlocklist(domain)} 
+                          className="px-2 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium transition-colors"
+                          title="Remove"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                    {noteEditingFor === domain && (
+                      <div className="mt-3 space-y-2">
+                        <textarea
+                          value={noteValue}
+                          onChange={(e) => setNoteValue(e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 resize-none"
+                          placeholder="Why is this domain blocked?"
+                          rows={2}
+                        />
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => saveNote(domain)} 
+                            className="flex-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"
+                          >
+                            Save Note
+                          </button>
+                          <button 
+                            onClick={() => setNoteEditingFor(null)} 
+                            className="flex-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                          {settings.notes?.[domain] && (
+                            <button 
+                              onClick={() => deleteNote(domain)} 
+                              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition-colors"
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {settings.notes?.[domain] && noteEditingFor !== domain && (
+                      <div className="mt-2 text-xs text-rose-700 dark:text-rose-300 bg-rose-100/50 dark:bg-rose-900/20 rounded-lg p-2">
+                        {settings.notes[domain]}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {settings.blocklist.length === 0 && (
+                  <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                    <Globe className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No blocked domains yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Allowlist */}
-            {settings.useAllowlistMode && (
-              <div>
-                <h3 className="text-sm font-bold text-slate-700 mb-4 flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                  <span>Allowed Domains</span>
-                </h3>
-                
-                <div className="flex space-x-2 mb-4">
-                  <input
-                    type="text"
-                    placeholder="github.com"
-                    value={newAllowlistItem}
-                    onChange={(e) => { setNewAllowlistItem(e.target.value); setAllowError(''); }}
-                    onKeyPress={(e) => e.key === 'Enter' && addToAllowlist()}
-                    className="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium bg-slate-50 focus:bg-white transition-all duration-200"
-                  />
-                  <button
-                    onClick={addToAllowlist}
-                    className="px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {allowError && <div className="text-xs text-emerald-700 mb-2">{allowError}</div>}
-                <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
-                  {settings.allowlist.map((domain) => (
-                    <div key={domain} className="bg-emerald-50 hover:bg-emerald-100 px-4 py-3 rounded-xl border border-emerald-200 transition-colors duration-200">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-emerald-800 flex-1 truncate">{domain}</span>
-                        <button onClick={() => editNote(domain)} className="px-2 py-1 rounded-lg bg-amber-500 text-white text-[11px] hover:bg-amber-600">Note</button>
-                        <button onClick={() => moveBetweenLists(domain, 'allowlist')} className="px-2 py-1 rounded-lg bg-indigo-600 text-white text-[11px] hover:bg-indigo-700 inline-flex items-center gap-1"><ArrowLeftRight className="h-3.5 w-3.5" />Move</button>
-                        <button onClick={() => removeFromAllowlist(domain)} className="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[11px] hover:bg-emerald-700">Remove</button>
-                      </div>
-                      {noteEditingFor === domain ? (
-                        <div className="mt-2 flex items-center gap-2">
-                          <input value={noteValue} onChange={(e) => setNoteValue(e.target.value)} className="flex-1 px-2 py-1 rounded-lg border border-slate-300 text-xs" placeholder="Why allowed?" />
-                          <button onClick={() => saveNote(domain)} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700">Save</button>
-                          <button onClick={() => setNoteEditingFor(null)} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">Cancel</button>
-                          <button onClick={() => deleteNote(domain)} className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 text-white hover:bg-rose-700">Delete</button>
-                        </div>
-                      ) : settings.notes?.[domain] ? (
-                        <div className="mt-1 text-[11px] text-emerald-700/90">{settings.notes[domain]}</div>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Usage Tips */}
-            <div className="lg:col-span-1">
-              <h3 className="text-sm font-bold text-slate-700 mb-4 flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span>Usage Tips</span>
+            <div>
+              <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-4 flex items-center space-x-2">
+                <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                <span>Allowed Domains ({settings.allowlist.length})</span>
               </h3>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border border-blue-200 shadow-sm">
-                <ul className="text-sm text-blue-800 space-y-3">
-                  <li className="flex items-start space-x-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Enter domains without "www" or "https://"</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Blocklist mode: blocks only listed sites</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Allowlist mode: blocks everything except listed sites</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Changes apply immediately during active sessions</span>
-                  </li>
-                </ul>
+              
+              <div className="flex space-x-2 mb-4">
+                <input
+                  type="text"
+                  placeholder="github.com"
+                  value={newAllowlistItem}
+                  onChange={(e) => { setNewAllowlistItem(e.target.value); setAllowError(''); }}
+                  onKeyPress={(e) => e.key === 'Enter' && addToAllowlist()}
+                  className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium bg-slate-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-600 text-slate-800 dark:text-slate-200 transition-all duration-200"
+                />
+                <button
+                  onClick={addToAllowlist}
+                  className="px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
               </div>
+
+              {allowError && <div className="text-xs text-emerald-700 dark:text-emerald-400 mb-2">{allowError}</div>}
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+                {settings.allowlist.map((domain) => (
+                  <div key={domain} className="bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 px-4 py-3 rounded-xl border border-emerald-200 dark:border-emerald-800 transition-colors duration-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200 flex-1 truncate">{domain}</span>
+                      {settings.notes?.[domain] && (
+                        <div className="w-2 h-2 rounded-full bg-amber-400" title="Has note"></div>
+                      )}
+                      <div className="flex gap-1">
+                        <button 
+                          onClick={() => editNote(domain)} 
+                          className="px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium transition-colors"
+                          title="Add/edit note"
+                        >
+                          📝
+                        </button>
+                        <button 
+                          onClick={() => moveBetweenLists(domain, 'allowlist')} 
+                          className="px-2 py-1 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium transition-colors inline-flex items-center gap-1"
+                          title="Move to blocklist"
+                        >
+                          <ArrowLeftRight className="h-3 w-3" />
+                        </button>
+                        <button 
+                          onClick={() => removeFromAllowlist(domain)} 
+                          className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors"
+                          title="Remove"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                    {noteEditingFor === domain && (
+                      <div className="mt-3 space-y-2">
+                        <textarea
+                          value={noteValue}
+                          onChange={(e) => setNoteValue(e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-xs bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 resize-none"
+                          placeholder="Why is this domain allowed?"
+                          rows={2}
+                        />
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => saveNote(domain)} 
+                            className="flex-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"
+                          >
+                            Save Note
+                          </button>
+                          <button 
+                            onClick={() => setNoteEditingFor(null)} 
+                            className="flex-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                          {settings.notes?.[domain] && (
+                            <button 
+                              onClick={() => deleteNote(domain)} 
+                              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition-colors"
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {settings.notes?.[domain] && noteEditingFor !== domain && (
+                      <div className="mt-2 text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-100/50 dark:bg-emerald-900/20 rounded-lg p-2">
+                        {settings.notes[domain]}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {settings.allowlist.length === 0 && (
+                  <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                    <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No allowed domains yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Usage Tips */}
+          <div className="mt-8 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800 shadow-sm">
+            <h3 className="text-sm font-bold text-purple-800 dark:text-purple-200 mb-4 flex items-center space-x-2">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span>💡 Usage Tips</span>
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ul className="text-sm text-purple-800 dark:text-purple-200 space-y-2">
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span>Enter domains without "www" or "https://"</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span>Blocklist mode: blocks only listed sites</span>
+                </li>
+              </ul>
+              <ul className="text-sm text-purple-800 dark:text-purple-200 space-y-2">
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span>Allowlist mode: blocks everything except listed sites</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span>Changes apply immediately during active sessions</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
 
         {/* Import / Export */}
-        <div className="bg-white dark:bg-slate-800 dark:border-slate-700 rounded-2xl shadow-lg border border-slate-200/50 p-6 mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-bold text-slate-800">Import / Export</div>
-            <button onClick={() => setImportOpen((v) => !v)} className="text-xs underline text-blue-700 hover:text-blue-900">{importOpen ? 'Hide' : 'Show'}</button>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700 p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">Import / Export</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Backup and restore your lists</p>
+            </div>
+            <button 
+              onClick={() => setImportOpen(!importOpen)} 
+              className="px-4 py-2 text-sm font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+            >
+              {importOpen ? 'Hide' : 'Show'}
+            </button>
           </div>
+          
           {importOpen && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <button onClick={exportData} className="px-3 py-2 text-xs font-semibold rounded-lg bg-slate-700 text-white hover:bg-slate-800">{copied ? 'Copied JSON!' : 'Copy JSON'}</button>
-                <span className="text-[11px] text-slate-500">Lists + notes snapshot</span>
+            <div className="space-y-4">
+              <div className="flex gap-3">
+                <button 
+                  onClick={exportData} 
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-slate-700 dark:bg-slate-600 hover:bg-slate-800 dark:hover:bg-slate-500 text-white transition-colors"
+                >
+                  <Copy className="h-4 w-4" />
+                  {copied ? 'Copied!' : 'Export JSON'}
+                </button>
+                <span className="text-sm text-slate-500 dark:text-slate-400 flex items-center">
+                  Export your lists and notes as JSON
+                </span>
               </div>
-              <textarea
-                value={importText}
-                onChange={(e) => { setImportText(e.target.value); setImportError(''); }}
-                placeholder='Paste JSON {"blocklist":[],"allowlist":[],"notes":{}} or newline-separated domains'
-                className="w-full h-28 text-xs p-2 border border-slate-300 rounded-lg"
-              />
-              {importError && <div className="text-xs text-rose-600">{importError}</div>}
+              
+              <div>
+                <textarea
+                  value={importText}
+                  onChange={(e) => { setImportText(e.target.value); setImportError(''); }}
+                  placeholder='Paste JSON {"blocklist":[],"allowlist":[],"notes":{}} or newline-separated domains'
+                  className="w-full h-32 text-sm p-4 border border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 resize-none"
+                />
+                {importError && (
+                  <div className="text-sm text-rose-600 dark:text-rose-400 mt-2">{importError}</div>
+                )}
+              </div>
+              
               <div className="flex items-center justify-between">
-                <div className="text-[11px] text-slate-500">Newline import goes to current mode list</div>
-                <button onClick={importData} className="px-3 py-2 text-xs font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700">Import</button>
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  Plain text domains will be added to the currently active list
+                </div>
+                <button 
+                  onClick={importData} 
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"
+                >
+                  <Upload className="h-4 w-4" />
+                  Import Data
+                </button>
               </div>
             </div>
           )}
         </div>
 
         {/* Save Button */}
-        <div className="mt-8 text-center">
+        <div className="text-center">
           <button
             onClick={saveSettings}
-            className={`px-8 py-4 rounded-xl font-bold transition-all duration-200 flex items-center space-x-3 mx-auto shadow-lg hover:shadow-xl transform hover:scale-105 ${
+            className={`px-8 py-4 rounded-xl font-bold transition-all duration-200 flex items-center space-x-3 mx-auto shadow-xl hover:shadow-2xl transform hover:scale-105 ${
               saved 
                 ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' 
-                : 'bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 text-white'
-            }`}
+                : 'bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 hover:from-purple-700 hover:via-purple-800 hover:to-indigo-800 text-white'
+            }`} 
           >
             <div className="p-1 bg-white/20 rounded-lg">
-              {saved ? <CheckCircle className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+              {saved ? <CheckCircle className="h-5 w-5" /> : <Save className="h-5 w-5" />}
             </div>
-            <span>{saved ? 'Settings Saved!' : 'Save All Settings'}</span>
+            <span className="text-lg">{saved ? 'Settings Saved!' : 'Save All Settings'}</span>
           </button>
         </div>
       </div>

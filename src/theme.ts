@@ -1,5 +1,6 @@
 export type Theme = 'light' | 'dark' | 'system';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mediaListener: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null = null;
 
 export function applyTheme(theme: Theme) {
